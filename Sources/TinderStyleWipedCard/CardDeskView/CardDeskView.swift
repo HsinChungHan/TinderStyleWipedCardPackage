@@ -8,12 +8,12 @@
 
 import UIKit
 
-protocol CardDeskViewDataSource: AnyObject {
+public protocol CardDeskViewDataSource: AnyObject {
   func cardDeskViewAllCardViewModels(_ cardDeskView: CardDeskView) -> [CardViewModel]
 }
 
 public class CardDeskView: UIView {
-  weak var dataSource: CardDeskViewDataSource?
+  weak public var dataSource: CardDeskViewDataSource?
   
   override public init(frame: CGRect) {
     super.init(frame: .zero)
