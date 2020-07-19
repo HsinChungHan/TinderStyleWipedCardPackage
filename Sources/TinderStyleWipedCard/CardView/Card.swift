@@ -116,7 +116,16 @@ extension Card {
     }
   }
   
-  
+  //只用在 Ranking visualiztion tool,因為想要讓照片一直 tap 下去到最後一張
+  public func moveForwardToNextPhoto() -> Bool {
+    guard let dataSource = dataSource else {
+      fatalError("🚨 You have to set Card's dataSourece")
+    }
+    let countOfPhotos = dataSource.cardPhotos(self).count
+    let currentIndexOfPhoto = dataSource.cardCurrentPhotoIndex(self)
+    delegate?.cardPhototMoveForward(self, currentPhotoIndex: currentIndexOfPhoto, countOfPhotos: countOfPhotos)
+    return currentIndexOfPhoto == countOfPhotos - 1
+  }
   //MARK: - Layout function
   fileprivate func setupLayout() {
     layer.cornerRadius = 10.0

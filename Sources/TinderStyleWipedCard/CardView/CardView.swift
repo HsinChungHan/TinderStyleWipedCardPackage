@@ -42,6 +42,13 @@ class CardView: UIView {
   }
 }
 
+extension CardView {
+  //只用在 Ranking visualiztion tool,因為想要讓照片一直 tap 下去到最後一張
+  func moveForwardToNextPhoto() -> Bool {
+    return card.moveForwardToNextPhoto()
+  }
+}
+
 extension CardView: CardDataSource {
   
   func cardCurrentPhotoIndex(_ card: Card) -> Int {
