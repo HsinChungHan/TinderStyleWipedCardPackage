@@ -12,8 +12,15 @@ public protocol CardDeskViewDataSource: AnyObject {
   func cardDeskViewAllCardViewModels(_ cardDeskView: CardDeskView) -> [CardViewModel]
 }
 
+public protocol CardDeskViewDelegate: AnyObject {
+  func cardDeskViewDidLikeCard(_ cardDeskView: CardDeskView, cardViewModel: CardViewModel)
+  
+  func cardDeskViewDidDislikeCard(_ cardDeskView: CardDeskView, cardViewModel: CardViewModel)
+}
+
 public class CardDeskView: UIView {
   weak public var dataSource: CardDeskViewDataSource?
+  weak public var delegate: CardDeskViewDelegate?
   
   override public init(frame: CGRect) {
     super.init(frame: .zero)
@@ -35,6 +42,17 @@ extension CardDeskView {
       let cardView = CardView(cardViewModel: $0)
       addSubview(cardView)
       cardView.fillSuperView()
+      cardView.delegate = self
     }
+  }
+}
+
+extension CardDeskView: CardViewDelegate {
+  func cardViewDidLikeCard(_ cardView: CardView, cardViewModel: CardViewModel) {
+    delegate?.cardDeskViewDidLikeCard(self, cardViewModel: cardViewModel)
+  }
+  
+  func cardViewDidDislikeCard(_ cardView: CardView, cardViewModel: CardViewModel) {
+    delegate?.cardDeskViewDidDislikeCard(self, cardViewModel: cardViewModel)
   }
 }

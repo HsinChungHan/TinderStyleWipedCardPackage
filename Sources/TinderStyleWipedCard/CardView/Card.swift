@@ -106,7 +106,8 @@ extension Card {
       fatalError("🚨 You have to set Card's dataSourece")
     }
     let tapLocation = gesture.location(in: nil)
-    let shouldAdvanceNextPhoto = tapLocation.x > frame.width/2 ? true : false
+    let midx = frame.midX
+    let shouldAdvanceNextPhoto = tapLocation.x > midx ? true : false
     let countOfPhotos = dataSource.cardPhotos(self).count
     let currentIndexOfPhoto = dataSource.cardCurrentPhotoIndex(self)
     if shouldAdvanceNextPhoto{

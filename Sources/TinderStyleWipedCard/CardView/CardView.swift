@@ -10,7 +10,18 @@ import UIKit
 
 fileprivate let threhold: CGFloat = 120
 
+public enum SlideAction {
+  case like
+  case disLike
+}
+
+protocol CardViewDelegate: AnyObject {
+  func cardViewDidLikeCard(_ cardView: CardView, cardViewModel: CardViewModel)
+  func cardViewDidDislikeCard(_ cardView: CardView, cardViewModel: CardViewModel)
+}
+
 class CardView: UIView {
+  weak var delegate: CardViewDelegate?
   
   fileprivate var card = Card()
   fileprivate var cardViewModel: CardViewModel
@@ -93,19 +104,32 @@ extension CardView: CardDelegate {
   }
   
   fileprivate func handleEnded(_ gesture: UIPanGestureRecognizer) {
-    let translationDirection: CGFloat = gesture.translation(in: nil).x > 0 ? 1 : -1
+    var slideAction: SlideAction = .like
+    let translationDirection: CGFloat = gesture.translation(in: nil).x
+    translationDirection > 0 ? (slideAction = .like) : (slideAction = .disLike)
     let shouldDismissedCard = abs(gesture.translation(in: nil).x) > threhold
     if shouldDismissedCard{
-      if translationDirection == 1{
-        performSwipAnimation(translation: 700, angle: 15)
-      }else{
-        performSwipAnimation(translation: -700, angle: -15)
+      switch slideAction {
+        case .like:
+        	performSwipAnimation(translation: 700, angle: 15)
+          likeCard(cardViewModel: cardViewModel)
+        case .disLike:
+        	performSwipAnimation(translation: -700, angle: -15)
+          dislikeCard(cardViewModel: cardViewModel)
       }
     }else{
       UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.1, options: .curveEaseOut, animations: {[unowned self] in
         self.transform = .identity
       })
     }
+  }
+  
+  fileprivate func likeCard(cardViewModel: CardViewModel) {
+    delegate?.cardViewDidLikeCard(self, cardViewModel: cardViewModel)
+  }
+  
+  fileprivate func dislikeCard(cardViewModel: CardViewModel) {
+    delegate?.cardViewDidDislikeCard(self, cardViewModel: cardViewModel)
   }
   
   fileprivate func performSwipAnimation(translation: CGFloat, angle: CGFloat) {
