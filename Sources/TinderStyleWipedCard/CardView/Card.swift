@@ -42,12 +42,17 @@ class Card: UIView {
   override init(frame: CGRect) {
     super.init(frame: .zero)
     setupLayout()
-    layer.addSublayer(gradientLayer)
     addTapGesture()
   }
   
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
+  }
+  
+  override func layoutSubviews() {
+    super.layoutSubviews()
+    layer.addSublayer(gradientLayer)
+    gradientLayer.frame = frame
   }
 }
 
@@ -73,7 +78,7 @@ extension Card {
   fileprivate func makeGradientLayer() -> CAGradientLayer {
     let layer = CAGradientLayer()
     layer.colors = [UIColor.clear.cgColor, UIColor.black.cgColor]
-    layer.locations = [0.5, 1.1]
+    layer.locations = [0.5, 1.0]
     return layer
   }
   
