@@ -19,6 +19,7 @@ protocol CardViewDataSource: AnyObject  {
   func cardViewCardPhotoContentMode(_ cardView: CardView) -> UIView.ContentMode
   func cardViewCardShouldAddGradientLayer(_ cardView: CardView) -> Bool
   func cardViewCardShouldAddInformationLabel(_ cardView: CardView) -> Bool
+  func cardViewCardShouldAddBarStackView(_ cardView: CardView) -> Bool
 }
 
 protocol CardViewDelegate: AnyObject {
@@ -57,6 +58,13 @@ extension CardView {
 }
 
 extension CardView: CardDataSource {
+  func cardShouldAddBarStackView(_ card: Card) -> Bool {
+    guard let dataSource = dataSource else {
+      fatalError("🚨 You have to set CardView's dataSourece")
+    }
+    return dataSource.cardViewCardShouldAddBarStackView(self)
+  }
+  
   func cardPhotoContentMode(_ card: Card) -> UIView.ContentMode {
     guard let dataSource = dataSource else {
       fatalError("🚨 You have to set CardView's dataSourece")

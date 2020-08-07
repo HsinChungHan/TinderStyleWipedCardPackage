@@ -14,6 +14,7 @@ public protocol CardDeskViewDataSource: AnyObject {
   func cardDeskViewCardPhotoContentMode(_ cardDeskView: CardDeskView) -> UIView.ContentMode
   func cardDeskViewCardShouldAddGradientLayer(_ cardDeskView: CardDeskView) -> Bool
   func cardDeskViewCardShouldAddInformationLabel(_ cardDeskView: CardDeskView) -> Bool
+  func cardDeskViewCardShouldAddBarStackView(_ cardDeskView: CardDeskView) -> Bool
 }
 
 public protocol CardDeskViewDelegate: AnyObject {
@@ -104,6 +105,13 @@ extension CardDeskView: CardViewDelegate {
 }
 
 extension CardDeskView: CardViewDataSource {
+  func cardViewCardShouldAddBarStackView(_ cardView: CardView) -> Bool {
+    guard let dataSource = dataSource else {
+      fatalError("🚨 You have to set dataSource for CardDeskView first")
+    }
+    return dataSource.cardDeskViewCardShouldAddBarStackView(self)
+  }
+  
   func cardViewCardPhotoContentMode(_ cardView: CardView) -> UIView.ContentMode {
     guard let dataSource = dataSource else {
       fatalError("🚨 You have to set dataSource for CardDeskView first")

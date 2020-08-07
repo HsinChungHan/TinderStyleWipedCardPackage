@@ -21,6 +21,7 @@ protocol CardDataSource: AnyObject {
   func cardPhotoContentMode(_ card: Card) -> UIView.ContentMode
   func cardShouldAddGradientLayer(_ card: Card) -> Bool
   func cardShouldAddInformationLabel(_ card: Card) -> Bool
+  func cardShouldAddBarStackView(_ card: Card) -> Bool
 }
 
 //MARK: - CardDelegate
@@ -58,7 +59,8 @@ class Card: UIView {
       fatalError("🚨 You have to set Card's dataSourece")
     }
     let shouldAddGradientLayer = dataSource.cardShouldAddGradientLayer(self)
-    let shouldAddInformationLabel = dataSource.cardShouldAddInformationLabel(self) 
+    let shouldAddInformationLabel = dataSource.cardShouldAddInformationLabel(self)
+    let shouldAddBarStackView = dataSource.cardShouldAddBarStackView(self)
     if shouldAddGradientLayer {
       layer.addSublayer(gradientLayer)
       gradientLayer.frame = frame
@@ -69,8 +71,14 @@ class Card: UIView {
       informationLabel.anchor(top: nil, bottom: bottomAnchor, leading: leadingAnchor, trailing: trailingAnchor, padding: .init(top: 0, left: 16, bottom: 16, right: 16), size: .zero)
     }
     
+    if shouldAddBarStackView {
+      addSubview(barStackView)
+      barStackView.anchor(top: topAnchor, bottom: nil, leading: leadingAnchor, trailing: trailingAnchor, padding: .init(top: 8, left: 8, bottom: 0, right: 8), size: .init(width: 0, height: 4))
+    }
+    
     let contentMode = dataSource.cardPhotoContentMode(self)
     imageView.contentMode = contentMode
+    
   }
 }
 
@@ -154,10 +162,7 @@ extension Card {
     clipsToBounds = true
     
     addSubview(imageView)
-    addSubview(barStackView)
-    
     imageView.fillSuperView()
-    barStackView.anchor(top: topAnchor, bottom: nil, leading: leadingAnchor, trailing: trailingAnchor, padding: .init(top: 8, left: 8, bottom: 0, right: 8), size: .init(width: 0, height: 4))
   }
   
   
