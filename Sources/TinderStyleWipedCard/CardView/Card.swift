@@ -58,7 +58,7 @@ class Card: UIView {
       fatalError("🚨 You have to set Card's dataSourece")
     }
     let shouldAddGradientLayer = dataSource.cardShouldAddGradientLayer(self)
-    let shouldAddInformationLabel = dataSource.cardShouldAddInformationLabel(self)
+    let shouldAddInformationLabel = dataSource.cardShouldAddInformationLabel(self) 
     if shouldAddGradientLayer {
       layer.addSublayer(gradientLayer)
       gradientLayer.frame = frame
@@ -68,6 +68,9 @@ class Card: UIView {
       addSubview(informationLabel)
       informationLabel.anchor(top: nil, bottom: bottomAnchor, leading: leadingAnchor, trailing: trailingAnchor, padding: .init(top: 0, left: 16, bottom: 16, right: 16), size: .zero)
     }
+    
+    let contentMode = dataSource.cardPhotoContentMode(self)
+    imageView.contentMode = contentMode
   }
 }
 
@@ -76,12 +79,7 @@ extension Card {
   
   //MARK: - Lazy initialization
   fileprivate func makePhotoImageView() -> UIImageView {
-    guard let dataSource = dataSource else {
-      fatalError("🚨 You have to set Card's dataSourece")
-    }
-    let contentMode = dataSource.cardPhotoContentMode(self)
     let imv = UIImageView()
-    imv.contentMode = contentMode
     imv.clipsToBounds = true
     return imv
   }
