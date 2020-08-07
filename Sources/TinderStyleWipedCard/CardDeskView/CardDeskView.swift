@@ -11,6 +11,9 @@ import UIKit
 public protocol CardDeskViewDataSource: AnyObject {
   func cardDeskViewARoundDuration(_ cardDeskView: CardDeskView) -> TimeInterval
   func cardDeskViewAllCardViewModelTuples(_ cardDeskView: CardDeskView) -> [(title: String, textAlignment: NSTextAlignment, images: [String])]
+  func cardDeskViewCardPhotoContentMode(_ cardDeskView: CardDeskView) -> UIView.ContentMode
+  func cardDeskViewCardShouldAddGradientLayer(_ cardDeskView: CardDeskView) -> Bool
+  func cardDeskViewCardShouldAddInformationLabel(_ cardDeskView: CardDeskView) -> Bool
 }
 
 public protocol CardDeskViewDelegate: AnyObject {
@@ -57,6 +60,7 @@ extension CardDeskView {
       addSubview(cardView)
       cardView.fillSuperView()
       cardView.delegate = self
+      cardView.dataSource = self
       cardViews.append(cardView)
     }
   }
@@ -97,4 +101,28 @@ extension CardDeskView: CardViewDelegate {
   func cardViewDidDislikeCard(_ cardView: CardView, cardViewModel: CardViewModel) {
     delegate?.cardDeskViewDidDislikeCard(self, cardViewModel: cardViewModel)
   }
+}
+
+extension CardDeskView: CardViewDataSource {
+  func cardViewCardPhotoContentMode(_ cardView: CardView) -> UIView.ContentMode {
+    guard let dataSource = dataSource else {
+      fatalError("🚨 You have to set dataSource for CardDeskView first")
+    }
+    return dataSource.cardDeskViewCardPhotoContentMode(self)
+  }
+  
+  func cardViewCardShouldAddGradientLayer(_ cardView: CardView) -> Bool {
+    guard let dataSource = dataSource else {
+      fatalError("🚨 You have to set dataSource for CardDeskView first")
+    }
+    return dataSource.cardDeskViewCardShouldAddGradientLayer(self)
+  }
+  
+  func cardViewCardShouldAddInformationLabel(_ cardView: CardView) -> Bool {
+    guard let dataSource = dataSource else {
+      fatalError("🚨 You have to set dataSource for CardDeskView first")
+    }
+    return dataSource.cardDeskViewCardShouldAddInformationLabel(self)
+  }
+  
 }

@@ -15,6 +15,12 @@ public enum SlideAction {
   case disLike
 }
 
+protocol CardViewDataSource: AnyObject  {
+  func cardViewCardPhotoContentMode(_ cardView: CardView) -> UIView.ContentMode
+  func cardViewCardShouldAddGradientLayer(_ cardView: CardView) -> Bool
+  func cardViewCardShouldAddInformationLabel(_ cardView: CardView) -> Bool
+}
+
 protocol CardViewDelegate: AnyObject {
   func cardViewDidLikeCard(_ cardView: CardView, cardViewModel: CardViewModel)
   func cardViewDidDislikeCard(_ cardView: CardView, cardViewModel: CardViewModel)
@@ -22,6 +28,7 @@ protocol CardViewDelegate: AnyObject {
 
 class CardView: UIView {
   weak var delegate: CardViewDelegate?
+  weak var dataSource: CardViewDataSource?
   
   fileprivate var card = Card()
   fileprivate var cardViewModel: CardViewModel
@@ -50,6 +57,27 @@ extension CardView {
 }
 
 extension CardView: CardDataSource {
+  func cardPhotoContentMode(_ card: Card) -> UIView.ContentMode {
+    guard let dataSource = dataSource else {
+      fatalError("🚨 You have to set CardView's dataSourece")
+    }
+    return dataSource.cardViewCardPhotoContentMode(self)
+  }
+  
+  func cardShouldAddGradientLayer(_ card: Card) -> Bool {
+    guard let dataSource = dataSource else {
+      fatalError("🚨 You have to set CardView's dataSourece")
+    }
+    return dataSource.cardViewCardShouldAddGradientLayer(self)
+  }
+  
+  func cardShouldAddInformationLabel(_ card: Card) -> Bool {
+    guard let dataSource = dataSource else {
+      fatalError("🚨 You have to set CardView's dataSourece")
+    }
+    return dataSource.cardViewCardShouldAddInformationLabel(self)
+  }
+  
   
   func cardCurrentPhotoIndex(_ card: Card) -> Int {
     return cardViewModel.currentPhotoIndex

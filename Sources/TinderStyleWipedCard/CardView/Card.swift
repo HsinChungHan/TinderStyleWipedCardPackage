@@ -18,6 +18,9 @@ protocol CardDataSource: AnyObject {
   func cardInformationAttributedText(_ card: Card) -> NSAttributedString
   func cardInformationTextAlignment(_ card: Card) -> NSTextAlignment
   func cardCurrentPhotoIndex(_ card: Card) -> Int
+  func cardPhotoContentMode(_ card: Card) -> UIView.ContentMode
+  func cardShouldAddGradientLayer(_ card: Card) -> Bool
+  func cardShouldAddInformationLabel(_ card: Card) -> Bool
 }
 
 //MARK: - CardDelegate
@@ -51,10 +54,20 @@ class Card: UIView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    layer.addSublayer(gradientLayer)
-    gradientLayer.frame = frame
-    addSubview(informationLabel)
-    informationLabel.anchor(top: nil, bottom: bottomAnchor, leading: leadingAnchor, trailing: trailingAnchor, padding: .init(top: 0, left: 16, bottom: 16, right: 16), size: .zero)
+    guard let dataSource = dataSource else {
+      fatalError("🚨 You have to set Card's dataSourece")
+    }
+    let shouldAddGradientLayer = dataSource.cardShouldAddGradientLayer(self)
+    let shouldAddInformationLabel = dataSource.cardShouldAddInformationLabel(self)
+    if shouldAddGradientLayer {
+      layer.addSublayer(gradientLayer)
+      gradientLayer.frame = frame
+    }
+    
+    if shouldAddInformationLabel {
+      addSubview(informationLabel)
+      informationLabel.anchor(top: nil, bottom: bottomAnchor, leading: leadingAnchor, trailing: trailingAnchor, padding: .init(top: 0, left: 16, bottom: 16, right: 16), size: .zero)
+    }
   }
 }
 
@@ -63,8 +76,12 @@ extension Card {
   
   //MARK: - Lazy initialization
   fileprivate func makePhotoImageView() -> UIImageView {
+    guard let dataSource = dataSource else {
+      fatalError("🚨 You have to set Card's dataSourece")
+    }
+    let contentMode = dataSource.cardPhotoContentMode(self)
     let imv = UIImageView()
-    imv.contentMode = .scaleAspectFill
+    imv.contentMode = contentMode
     imv.clipsToBounds = true
     return imv
   }
@@ -140,11 +157,9 @@ extension Card {
     
     addSubview(imageView)
     addSubview(barStackView)
-//    addSubview(informationLabel)
     
     imageView.fillSuperView()
     barStackView.anchor(top: topAnchor, bottom: nil, leading: leadingAnchor, trailing: trailingAnchor, padding: .init(top: 8, left: 8, bottom: 0, right: 8), size: .init(width: 0, height: 4))
-//    informationLabel.anchor(top: nil, bottom: bottomAnchor, leading: leadingAnchor, trailing: trailingAnchor, padding: .init(top: 0, left: 16, bottom: 16, right: 16), size: .zero)
   }
   
   
