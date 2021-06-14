@@ -9,4 +9,8 @@ import Foundation
 
 class CardDeskViewModel {
     let isEmpty = Bindable<Bool>.init(value: nil)
+    
+    func getCardViewIndex(cardView: CardView, cardViews:[CardView]) -> Int {
+        return cardViews.firstIndex(of: cardView) ?? -1
+    }
 }
