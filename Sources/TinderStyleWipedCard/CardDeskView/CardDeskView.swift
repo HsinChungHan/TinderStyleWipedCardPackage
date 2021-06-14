@@ -18,8 +18,8 @@ public protocol CardDeskViewDataSource: AnyObject {
 }
 
 public protocol CardDeskViewDelegate: AnyObject {
-    func cardDeskViewDidLikeCard(_ cardDeskView: CardDeskView, cardViewModel: CardViewModel)
-    func cardDeskViewDidDislikeCard(_ cardDeskView: CardDeskView, cardViewModel: CardViewModel)
+    func cardDeskViewDidLikeCard(_ cardDeskView: CardDeskView, cardViewModel: CardViewModel, cardViewIndex: Int)
+    func cardDeskViewDidDislikeCard(_ cardDeskView: CardDeskView, cardViewModel: CardViewModel, cardViewIndex: Int)
     func cardDeskViewRunningOutOfCards(_ cardDeskView: CardDeskView)
 }
 
@@ -111,15 +111,17 @@ extension CardDeskView {
 
 extension CardDeskView: CardViewDelegate {
     func cardViewDidLikeCard(_ cardView: CardView, cardViewModel: CardViewModel) {
-        cardViews.remove(at: viewModel.getCardViewIndex(cardView: cardView, cardViews: cardViews))
+        let cardViewIndex = viewModel.getCardViewIndex(cardView: cardView, cardViews: cardViews)
+        cardViews.remove(at: cardViewIndex)
         viewModel.isEmpty.value = cardViews.isEmpty
-        delegate?.cardDeskViewDidLikeCard(self, cardViewModel: cardViewModel)
+        delegate?.cardDeskViewDidLikeCard(self, cardViewModel: cardViewModel, cardViewIndex: cardViewIndex)
     }
     
     func cardViewDidDislikeCard(_ cardView: CardView, cardViewModel: CardViewModel) {
-        cardViews.remove(at: viewModel.getCardViewIndex(cardView: cardView, cardViews: cardViews))
+        let cardViewIndex = viewModel.getCardViewIndex(cardView: cardView, cardViews: cardViews)
+        cardViews.remove(at: cardViewIndex)
         viewModel.isEmpty.value = cardViews.isEmpty
-        delegate?.cardDeskViewDidDislikeCard(self, cardViewModel: cardViewModel)
+        delegate?.cardDeskViewDidDislikeCard(self, cardViewModel: cardViewModel, cardViewIndex: cardViewIndex)
     }
 }
 
