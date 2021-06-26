@@ -113,15 +113,15 @@ extension CardDeskView: CardViewDelegate {
     func cardViewDidLikeCard(_ cardView: CardView, cardViewModel: CardViewModel) {
         let cardViewIndex = viewModel.getCardViewIndex(cardView: cardView, cardViews: cardViews)
         cardViews.remove(at: cardViewIndex)
-        viewModel.isEmpty.value = cardViews.isEmpty
         delegate?.cardDeskViewDidLikeCard(self, cardViewModel: cardViewModel, cardViewIndex: cardViewIndex)
+        viewModel.isEmpty.value = cardViews.isEmpty
     }
     
     func cardViewDidDislikeCard(_ cardView: CardView, cardViewModel: CardViewModel) {
         let cardViewIndex = viewModel.getCardViewIndex(cardView: cardView, cardViews: cardViews)
         cardViews.remove(at: cardViewIndex)
-        viewModel.isEmpty.value = cardViews.isEmpty
         delegate?.cardDeskViewDidDislikeCard(self, cardViewModel: cardViewModel, cardViewIndex: cardViewIndex)
+        viewModel.isEmpty.value = cardViews.isEmpty
     }
 }
 
